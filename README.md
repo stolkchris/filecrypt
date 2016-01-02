@@ -13,7 +13,13 @@ The goal of this project is to offer a nice way of working with encrypted files 
 
 This package uses stream filters for encryption and decryption, using box standard mcrypt ciphers. This allows for streaming decryption (and in the future encryption).
 
-### Requirements
+### Installation and Requirements
+You can install the package easily using composer
+```bash
+$ composer require wubbajack/filecrypt
+```
+
+The minimum requirements are:
  - PHP 5.5
  - Mcrypt
 
@@ -26,7 +32,7 @@ Below are some examples on how to use the FileEncrypter class
 
 /**
  * This creates a new instance of the FileEncrypter. By default
- * it uses RIJNDAEL-128 with a 16 bit block, which corresponds with the AES standard.
+ * it uses RIJNDAEL-128 with a 16 bit block size, which corresponds with the AES standard.
  * Please have a look at the class comments to see why this decision was made
  */
 $fileEncrypter = new Wubbajack\Encryption\FileEncrypter($key);
