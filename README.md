@@ -1,6 +1,13 @@
 # Filecrypt
 A PHP package for encrypting and decrypting files on the go!
 
+## DISCLAIMER
+This package is still a work in progress. This means that Method signatures and return values will change over time. Implementation specifics will also change.
+
+If you do wish to use or test this package, do so with care. Everything has been "humanly" tested, still working on writing proper tests.
+
+If you wish to contribute please start of with creating new issues before sending in pull requests.
+
 ## Info
 The goal of this project is to offer a nice way of working with encrypted files in PHP. There are some great (shell) tools out there that can do the same thing. But when decrypting streams becomes necessary, I've found it to be more and more difficult to implement properly.
 
@@ -74,10 +81,3 @@ $fileCrypt->streamDecrypt($encryptedFile, function ($data, $stream) {
  - Write proper documentation
  - Add check if file to encrypt/decrypt really exists
  - Add the possibility of writing custom data to an encrypted stream and save it afterwards
-
-## DISCLAIMER
-This package is still a work in progress. This means that Method signatures and return values will change over time. Implementation specifics will also change.
-
-If you do wish to use or test this package, do so with care. Everything has been "humanly" tested, still working on writing proper tests.
-
-If you wish to contribute please start of with creating new issues before sending in pull requests.
