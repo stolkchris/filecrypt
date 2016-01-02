@@ -1,0 +1,24 @@
+{
+    "name": "wubbajack/filecrypt",
+    "description": "PHP package for encrypted and decrypting files",
+    "type": "library",
+    "require": {
+        "php": ">=5.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christopher Stolk",
+            "email": "stolkchris@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Wubbajack\\": "src/"
+        }
+    }
+}

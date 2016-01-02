@@ -1,0 +1,3 @@
+# Git ignore file. exclude non-project essential files
+
+/vendor/
