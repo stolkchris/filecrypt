@@ -1,6 +1,9 @@
 <?php namespace Wubbajack\Tests;
 
+use TypeError;
 use Wubbajack\Encryption\EncryptedFile;
+use Wubbajack\Encryption\Exceptions\DecryptException;
+use Wubbajack\Encryption\Exceptions\EncryptException;
 use Wubbajack\Encryption\FileEncrypter;
 
 class FileEncrypterTest extends \PHPUnit_Framework_TestCase
@@ -111,14 +114,87 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
             EncryptedFile::class,
             $this->fileCrypt->encrypt($this->test_file, $this->test_encrypted_file)
         );
+
+        // Try testing with a non-existent source file
+        $this->setExpectedException(EncryptException::class);
+        $this->fileCrypt->encrypt(__DIR__ .'/test.test', __DIR__ .'/test.test.enc');
     }
 
     /**
      * Test decryption
+     * @expectedException TypeError
      */
     public function testDecrypt()
     {
-        $this->markTestIncomplete('Not implemented yet');
+        $encryptedFile = $this->fileCrypt->encrypt($this->test_file, $this->test_encrypted_file);
+
+        $this->fileCrypt->decrypt($encryptedFile, $this->test_decrypted_file);
+
+        // Test if the decrypted file exists
+        $this->assertTrue(file_exists($this->test_decrypted_file));
+
+        // Test if the checksum equals the original file
+        $this->assertEquals($encryptedFile->getChecksum(), sha1_file($this->test_decrypted_file));
+
+        // Test if the decrypted file contains the same content as the original
+        $this->assertEquals(file_get_contents($this->test_file), file_get_contents($this->test_decrypted_file));
+
+        // Test decryption of encrypted file with incorrect wrong IV
+        try {
+            $invalidEncryptedFile = EncryptedFile::create(
+                '2394qsf3-f9',
+                $encryptedFile->getChecksum(),
+                $encryptedFile->getPadding(),
+                $encryptedFile->getFile()->getRealPath()
+            );
+            $this->fileCrypt->decrypt($invalidEncryptedFile, $this->test_decrypted_file);
+            $this->fail('No exception was thrown on decrypting with an incorrect IV');
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(
+                DecryptException::class,
+                $e,
+                'Expected an instance of DecryptException containing a message about IV, got '. get_class($e)
+            );
+        }
+
+        // Test decryption of encrypted file with incorrect checksum
+        try {
+            $invalidEncryptedFile = EncryptedFile::create(
+                $encryptedFile->getIV(),
+                bin2hex(openssl_random_pseudo_bytes(16)),
+                $encryptedFile->getPadding(),
+                $encryptedFile->getFile()->getRealPath()
+            );
+            $this->fileCrypt->decrypt($invalidEncryptedFile, $this->test_decrypted_file);
+            $this->fail('No exception was thrown on decrypting with unmatching checksums');
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(
+                DecryptException::class,
+                $e,
+                'Expected an instance of DecryptException with a message about the checksum, got '. get_class($e)
+            );
+        }
+
+        // Test decryption of encrypted file with twice the amount of padding
+        try {
+            $invalidEncryptedFile = EncryptedFile::create(
+                $encryptedFile->getIV(),
+                $encryptedFile->getChecksum(),
+                $encryptedFile->getPadding() * 2,
+                $encryptedFile->getFile()->getRealPath()
+            );
+            $this->fileCrypt->decrypt($invalidEncryptedFile, $this->test_decrypted_file);
+            $this->fail('No exception was thrown on decrypting with too much padding');
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(
+                DecryptException::class,
+                $e,
+                'Expected an instance of DecryptException with a message about the checksum, got '. get_class($e)
+            );
+        }
+
+        // Test the decrypt method with an invalid variable type
+        $this->fileCrypt->decrypt($this->test_encrypted_file, $this->test_decrypted_file);
     }
 
     /**
@@ -136,6 +212,14 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
     {
         if (is_file($this->test_file)) {
             unlink($this->test_file);
+        }
+
+        if (is_file($this->test_encrypted_file)) {
+            unlink($this->test_encrypted_file);
+        }
+
+        if (is_file($this->test_decrypted_file)) {
+            unlink($this->test_decrypted_file);
         }
     }
 
