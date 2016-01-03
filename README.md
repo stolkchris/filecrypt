@@ -1,6 +1,11 @@
 # Filecrypt
 A PHP package for encrypting and decrypting files on the go!
 
+[![Build Status][ico-travis]][link-travis]
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Software License][ico-license]](LICENSE.md)
+
 ## DISCLAIMER
 This package is still a work in progress. This means that Method signatures and return values will change over time. Implementation specifics will also change.
 
@@ -85,3 +90,18 @@ $fileCrypt->streamDecrypt($encryptedFile, function ($data, $stream) {
 ## TODO
  - Write proper documentation
  - Add the possibility of writing custom data to an encrypted stream and save it afterwards
+
+ [ico-version]: https://img.shields.io/packagist/v/wubbajack/filecrypt.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/wubbajack/filecrypt/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/wubbajack/filecrypt.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/wubbajack/filecrypt.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/wubbajack/filecrypt.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/wubbajack/filecrypt
+[link-travis]: https://travis-ci.org/wubbajack/filecrypt
+[link-scrutinizer]: https://scrutinizer-ci.com/g/wubbajack/filecrypt/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/wubbajack/filecrypt
+[link-downloads]: https://packagist.org/packages/wubbajack/filecrypt
+[link-author]: https://github.com/:author_username
+[link-contributors]: ../../contributors
