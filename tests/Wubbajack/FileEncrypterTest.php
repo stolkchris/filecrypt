@@ -122,7 +122,6 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test decryption
-     * @expectedException TypeError
      */
     public function testDecrypt()
     {
@@ -192,9 +191,6 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
                 'Expected an instance of DecryptException with a message about the checksum, got '. get_class($e)
             );
         }
-
-        // Test the decrypt method with an invalid variable type
-        $this->fileCrypt->decrypt($this->test_encrypted_file, $this->test_decrypted_file);
     }
 
     /**
