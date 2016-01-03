@@ -3,7 +3,7 @@
     "description": "PHP package for encrypted and decrypting files",
     "type": "library",
     "require": {
-        "php": ">=5.5"
+        "php": ">=5.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.1"
