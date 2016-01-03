@@ -7,13 +7,17 @@ php:
   - hhvm
   - nightly
 
+before_script:
+  - composer self-update
+  - travis_retry composer install --no-interaction --prefer-source
+
 # Allow failures on nightly build
 matrix:
   allow_failures:
    - php: nightly
 
 # PHP unit script
-script: phpunit --configuration phpunit.xml --coverage-text
+script: phpunit --coverage-text --coverage-clover=coverage.xml
 
 # Notifications configuration
 notifications:
