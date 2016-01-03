@@ -20,7 +20,7 @@ $ composer require wubbajack/filecrypt
 ```
 
 The minimum requirements are:
- - PHP 5.5
+ - PHP 5.6
  - Mcrypt
 
 ### Usage

@@ -303,7 +303,7 @@ class FileEncrypter
             $data = fread($source, self::CHUNK_BYTES);
 
             // If eof is reached and padding is set, remove it from the file
-            if (feof($source) && $padding) {
+            if (feof($source) && (int) $padding > 0) {
                 $data = substr($data, 0, -$padding);
             }
 
