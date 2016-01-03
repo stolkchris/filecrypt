@@ -17,7 +17,9 @@ checks:
 # Code sniffer
 tools:
   # Set external code coverage
-  external_code_coverage: true
+  external_code_coverage:
+     timeout: 600
+     runs: 2
 
   # Set code sniffer standard
   php_code_sniffer:

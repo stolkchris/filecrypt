@@ -15,7 +15,7 @@ matrix:
    - php: hhvm
 
 # PHP unit script
-script: phpunit --coverage-text --coverage-clover=coverage.xml
+script: phpunit --coverage-text --coverage-clover=coverage.clover
 
 # After running tests
 after_script:
