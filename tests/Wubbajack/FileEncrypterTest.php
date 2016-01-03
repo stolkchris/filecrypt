@@ -202,7 +202,22 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
      */
     public function testStreamDecrypt()
     {
-        $this->markTestIncomplete('Not implemented yet');
+        $encryptedFile = $this->fileCrypt->encrypt($this->test_file, $this->test_encrypted_file);
+
+        // Test whether the checksum of the decrypted data equals the checksum of the file
+        $decrypted_data = '';
+        $this->fileCrypt->streamDecrypt(
+            $encryptedFile,
+            function ($data, $stream) use (&$decrypted_data, $encryptedFile) {
+                if (feof($stream)) {
+                    $data = substr($data, 0, -$encryptedFile->getPadding());
+                }
+
+                $decrypted_data .= $data;
+            }
+        );
+
+        $this->assertEquals(sha1($decrypted_data), $encryptedFile->getChecksum());
     }
 
     /**
