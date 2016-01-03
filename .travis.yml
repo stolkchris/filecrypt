@@ -9,7 +9,7 @@ php:
 
 before_script:
   - composer self-update
-  - travis_retry composer install --no-interaction --prefer-source
+  - composer dump-autoload
 
 # Allow failures on nightly build
 matrix:
