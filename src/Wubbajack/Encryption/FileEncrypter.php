@@ -110,7 +110,7 @@ class FileEncrypter
      *
      * @param string $source
      * @param string $target
-     * @return string The checksum of the encrypted file
+     * @return EncryptedFile An encrypted file object containing information about the IV, checksum and padding
      * @throws EncryptException
      */
     public function encrypt($source, $target)
