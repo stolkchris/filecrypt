@@ -2,8 +2,9 @@
 A PHP package for encrypting and decrypting files on the go!
 
 [![Build Status][ico-travis]][link-travis]
-[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Coverage][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
+[![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
 
 ## DISCLAIMER
