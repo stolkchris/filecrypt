@@ -83,7 +83,5 @@ $fileCrypt->streamDecrypt($encryptedFile, function ($data, $stream) {
 ```
 
 ## TODO
- - Write tests!!!
  - Write proper documentation
- - Add check if file to encrypt/decrypt really exists
  - Add the possibility of writing custom data to an encrypted stream and save it afterwards
