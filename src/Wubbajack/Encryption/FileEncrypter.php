@@ -190,7 +190,14 @@ class FileEncrypter
 
         // Run the callback while the file pointer isn't at the end
         while (!feof($stream)) {
-            $callback(fread($stream, self::CHUNK_BYTES), $stream);
+            $data = fread($stream, self::CHUNK_BYTES);
+
+            // Trim the padded bytes off of the data once EOF has been reached
+            if (feof($stream)) {
+                $data = substr($data, 0, -$encryptedFile->getPadding());
+            }
+
+            $callback($data, $stream);
         }
     }
 
