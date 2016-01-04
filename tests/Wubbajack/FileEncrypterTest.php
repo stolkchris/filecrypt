@@ -205,10 +205,6 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
         $this->fileCrypt->streamDecrypt(
             $encryptedFile,
             function ($data, $stream) use (&$decrypted_data, $encryptedFile) {
-                if (feof($stream)) {
-                    $data = substr($data, 0, -$encryptedFile->getPadding());
-                }
-
                 $decrypted_data .= $data;
             }
         );
