@@ -323,16 +323,12 @@ class FileEncrypter
 
     /**
      * Returns the options for the stream filter
-     * @param null $iv If no IV is set, one will be created
+     * @param string $iv
      *
      * @return array Returns an array with 'mode','key' and 'iv'
      */
-    protected function getOptions($iv = null)
+    protected function getOptions($iv)
     {
-        if ($iv === null) {
-            mcrypt_create_iv($this->getIvSize(), $this->getRandomizer());
-        }
-
         return [
             'mode' => $this->mode,
             'key'  => $this->key,
