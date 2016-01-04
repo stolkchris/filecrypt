@@ -63,6 +63,10 @@ class EncryptedFile implements \Serializable
     public static function create($iv, $checksum, $padding, $file)
     {
         if (!($file instanceof \SplFileInfo)) {
+            if (!file_exists($file)) {
+                throw new \RuntimeException('Unable to create encrypted file object, file doesn\'t exist');
+            }
+
             $file = new \SplFileInfo($file);
         }
 
