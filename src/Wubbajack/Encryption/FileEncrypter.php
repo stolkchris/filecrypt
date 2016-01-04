@@ -150,7 +150,11 @@ class FileEncrypter
 
         try {
             $this->decryptFile($source, $target, $encryptedFile->getIv(), $encryptedFile->getPadding());
+        } catch (DecryptException $e) {
+            // Cascade Decrypt exceptions
+            throw $e;
         } catch (\Exception $e) {
+            // "wrap" other exceptions and add them to the previous stack
             throw new DecryptException('Unable to decrypt file', 0, $e);
         }
 
@@ -180,17 +184,23 @@ class FileEncrypter
         // Get the path to the encrypted file
         $source = $encryptedFile->getFile()->getRealPath();
 
-        // Check if callback is a closure
-        if (!($callback instanceof \Closure)) {
-            throw new DecryptException('Callback must be callable');
-        }
-
         // Get the decryption stream
-        $stream = $this->createDecryptionStream($source, $this->getOptions($encryptedFile->getIv()));
+        try {
+            $stream = $this->createDecryptionStream($source, $this->getOptions($encryptedFile->getIv()));
+        } catch (\Exception $e) {
+            throw new DecryptException('Unable to create decryption stream', 0, $e);
+        }
 
         // Run the callback while the file pointer isn't at the end
         while (!feof($stream)) {
-            $callback(fread($stream, self::CHUNK_BYTES), $stream);
+            $data = fread($stream, self::CHUNK_BYTES);
+
+            // Trim the padded bytes off of the data once EOF has been reached
+            if (feof($stream)) {
+                $data = substr($data, 0, -$encryptedFile->getPadding());
+            }
+
+            $callback($data, $stream);
         }
     }
 
@@ -313,16 +323,12 @@ class FileEncrypter
 
     /**
      * Returns the options for the stream filter
-     * @param null $iv If no IV is set, one will be created
+     * @param string $iv
      *
      * @return array Returns an array with 'mode','key' and 'iv'
      */
-    protected function getOptions($iv = null)
+    protected function getOptions($iv)
     {
-        if ($iv === null) {
-            mcrypt_create_iv($this->getIvSize(), $this->getRandomizer());
-        }
-
         return [
             'mode' => $this->mode,
             'key'  => $this->key,

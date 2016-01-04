@@ -1,10 +1,10 @@
-<?php namespace Wubbajack\Tests;
+<?php namespace Wubbajack\Encryption\Tests;
 
-use TypeError;
 use Wubbajack\Encryption\EncryptedFile;
-use Wubbajack\Encryption\Exceptions\DecryptException;
-use Wubbajack\Encryption\Exceptions\EncryptException;
 use Wubbajack\Encryption\FileEncrypter;
+
+use Wubbajack\Encryption\Exceptions\EncryptException;
+use Wubbajack\Encryption\Exceptions\DecryptException;
 
 class FileEncrypterTest extends \PHPUnit_Framework_TestCase
 {
@@ -149,48 +149,19 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
             $this->fileCrypt->decrypt($invalidEncryptedFile, $this->test_decrypted_file);
             $this->fail('No exception was thrown on decrypting with an incorrect IV');
         } catch (\Exception $e) {
-            $this->assertInstanceOf(
-                DecryptException::class,
-                $e,
-                'Expected an instance of DecryptException containing a message about IV, got '. get_class($e)
-            );
+            $this->assertInstanceOf(DecryptException::class, $e);
         }
 
         // Test decryption of encrypted file with incorrect checksum
-        try {
-            $invalidEncryptedFile = EncryptedFile::create(
-                $encryptedFile->getIV(),
-                bin2hex(openssl_random_pseudo_bytes(16)),
-                $encryptedFile->getPadding(),
-                $encryptedFile->getFile()->getRealPath()
-            );
-            $this->fileCrypt->decrypt($invalidEncryptedFile, $this->test_decrypted_file);
-            $this->fail('No exception was thrown on decrypting with unmatching checksums');
-        } catch (\Exception $e) {
-            $this->assertInstanceOf(
-                DecryptException::class,
-                $e,
-                'Expected an instance of DecryptException with a message about the checksum, got '. get_class($e)
-            );
-        }
-
-        // Test decryption of encrypted file with twice the amount of padding
-        try {
-            $invalidEncryptedFile = EncryptedFile::create(
-                $encryptedFile->getIV(),
-                $encryptedFile->getChecksum(),
-                $encryptedFile->getPadding() * 2,
-                $encryptedFile->getFile()->getRealPath()
-            );
-            $this->fileCrypt->decrypt($invalidEncryptedFile, $this->test_decrypted_file);
-            $this->fail('No exception was thrown on decrypting with too much padding');
-        } catch (\Exception $e) {
-            $this->assertInstanceOf(
-                DecryptException::class,
-                $e,
-                'Expected an instance of DecryptException with a message about the checksum, got '. get_class($e)
-            );
-        }
+        // We perform this test by setting the expected exception
+        $this->setExpectedException(DecryptException::class);
+        $invalidEncryptedFile = EncryptedFile::create(
+            $encryptedFile->getIV(),
+            bin2hex(openssl_random_pseudo_bytes(16)),
+            $encryptedFile->getPadding() * 2,
+            $encryptedFile->getFile()->getRealPath()
+        );
+        $this->fileCrypt->decrypt($invalidEncryptedFile, $this->test_decrypted_file);
     }
 
     /**
@@ -205,10 +176,6 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
         $this->fileCrypt->streamDecrypt(
             $encryptedFile,
             function ($data, $stream) use (&$decrypted_data, $encryptedFile) {
-                if (feof($stream)) {
-                    $data = substr($data, 0, -$encryptedFile->getPadding());
-                }
-
                 $decrypted_data .= $data;
             }
         );
