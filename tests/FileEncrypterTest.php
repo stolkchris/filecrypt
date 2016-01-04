@@ -1,10 +1,10 @@
-<?php namespace Wubbajack\Tests;
+<?php namespace Wubbajack\Encryption\Tests;
 
-use TypeError;
 use Wubbajack\Encryption\EncryptedFile;
-use Wubbajack\Encryption\Exceptions\DecryptException;
-use Wubbajack\Encryption\Exceptions\EncryptException;
 use Wubbajack\Encryption\FileEncrypter;
+
+use Wubbajack\Encryption\Exceptions\EncryptException;
+use Wubbajack\Encryption\Exceptions\DecryptException;
 
 class FileEncrypterTest extends \PHPUnit_Framework_TestCase
 {
@@ -210,6 +210,29 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(sha1($decrypted_data), $encryptedFile->getChecksum());
+    }
+
+    /**
+     * Tests encrypt exception
+     *
+     * @throws EncryptException
+     */
+    public function testEncryptException()
+    {
+        $this->setExpectedException(EncryptException::class);
+        $this->fileCrypt->encrypt(__DIR__ .'non-existant.doc', $this->test_encrypted_file);
+    }
+
+    /**
+     * Tests decrypt exception
+     * @throws EncryptException
+     */
+    public function testDecryptException()
+    {
+        $this->setExpectedException(DecryptException::class);
+
+        $encryptedFile = EncryptedFile::create(12345678, 12345678, 0, $this->test_encrypted_file);
+        $this->fileCrypt->decrypt($encryptedFile, $this->test_decrypted_file);
     }
 
     /**
