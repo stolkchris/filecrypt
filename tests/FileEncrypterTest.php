@@ -224,18 +224,6 @@ class FileEncrypterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests decrypt exception
-     * @throws EncryptException
-     */
-    public function testDecryptException()
-    {
-        $this->setExpectedException(DecryptException::class);
-
-        $encryptedFile = EncryptedFile::create(12345678, 12345678, 0, $this->test_encrypted_file);
-        $this->fileCrypt->decrypt($encryptedFile, $this->test_decrypted_file);
-    }
-
-    /**
      * Removes all of the created encrypted and decrypted files created during testing
      */
     protected function cleanupFiles()
