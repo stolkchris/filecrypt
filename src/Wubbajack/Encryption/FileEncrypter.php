@@ -150,7 +150,11 @@ class FileEncrypter
 
         try {
             $this->decryptFile($source, $target, $encryptedFile->getIv(), $encryptedFile->getPadding());
+        } catch (DecryptException $e) {
+            // Cascade Decrypt exceptions
+            throw $e;
         } catch (\Exception $e) {
+            // "wrap" other exceptions and add them to the previous stack
             throw new DecryptException('Unable to decrypt file', 0, $e);
         }
 
@@ -180,13 +184,12 @@ class FileEncrypter
         // Get the path to the encrypted file
         $source = $encryptedFile->getFile()->getRealPath();
 
-        // Check if callback is a closure
-        if (!($callback instanceof \Closure)) {
-            throw new DecryptException('Callback must be callable');
-        }
-
         // Get the decryption stream
-        $stream = $this->createDecryptionStream($source, $this->getOptions($encryptedFile->getIv()));
+        try {
+            $stream = $this->createDecryptionStream($source, $this->getOptions($encryptedFile->getIv()));
+        } catch (\Exception $e) {
+            throw new DecryptException('Unable to create decryption stream', 0, $e);
+        }
 
         // Run the callback while the file pointer isn't at the end
         while (!feof($stream)) {
